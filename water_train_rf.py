@@ -33,8 +33,9 @@ X_train = train_processed_data.iloc[:,0:-1].values
 y_train = train_processed_data.iloc[:,-1].values
 
 n_estimators = 500
+max_depth=10
 with mlflow.start_run():
-    clf = RandomForestClassifier(n_estimators=n_estimators)
+    clf = RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth)
     clf.fit(X_train,y_train)
 
     # save 
@@ -60,6 +61,7 @@ with mlflow.start_run():
     mlflow.log_metric("f1-score",f1_score)
 
     mlflow.log_param("n_estimators",n_estimators)
+    mlflow.log_param("max_depth",max_depth)
 
     cm = confusion_matrix(y_test,y_pred)
     plt.figure(figsize=(5,5))
