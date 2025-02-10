@@ -5,11 +5,12 @@ from sklearn.metrics import confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
 import dagshub
-dagshub.init(repo_owner='nipun5', repo_name='AquaPredict_MLFLOW_Dagshub', mlflow=True)
+# dagshub.init(repo_owner='nipun5', repo_name='AquaPredict_MLFLOW_Dagshub', mlflow=True)
 
 
-mlflow.set_experiment("water_exp1")
-mlflow.set_tracking_uri("https://dagshub.com/nipun5/AquaPredict_MLFLOW_Dagshub.mlflow")
+mlflow.set_experiment("water_exp_auto")
+# mlflow.set_tracking_uri("https://dagshub.com/nipun5/AquaPredict_MLFLOW_Dagshub.mlflow")
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
 data = pd.read_csv("water_potability.csv")
 
 from sklearn.model_selection import train_test_split
@@ -34,6 +35,9 @@ y_train = train_processed_data.iloc[:,-1].values
 
 n_estimators = 500
 max_depth=10
+
+mlflow.autolog()
+
 with mlflow.start_run():
     clf = RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth)
     clf.fit(X_train,y_train)
@@ -55,29 +59,7 @@ with mlflow.start_run():
     recall = recall_score(y_test,y_pred)
     f1_score = f1_score(y_test,y_pred)
 
-    mlflow.log_metric("acc",acc)
-    mlflow.log_metric("precision", precision)
-    mlflow.log_metric("recall", recall)
-    mlflow.log_metric("f1-score",f1_score)
-
-    mlflow.log_param("n_estimators",n_estimators)
-    mlflow.log_param("max_depth",max_depth)
-
-    cm = confusion_matrix(y_test,y_pred)
-    plt.figure(figsize=(5,5))
-    sns.heatmap(cm,annot=True,fmt='d')
-    plt.xlabel('Predicted')
-    plt.ylabel('Actual')
-    plt.title('Confusion Matrix')
-    plt.savefig("confusion_matrix.png")
-
-    mlflow.log_artifact("confusion_matrix.png")
-    mlflow.sklearn.log_model(clf,"RandomForestClassifier")
-
     mlflow.log_artifact(__file__)
-
-    mlflow.set_tag("author","AquaPredict")
-    mlflow.set_tag("model","RF")
 
     print("acc",acc)
     print("precision", precision)

@@ -10,7 +10,7 @@ dagshub.init(repo_owner='nipun5', repo_name='AquaPredict_MLFLOW_Dagshub', mlflow
 
 mlflow.set_experiment("water_exp2")
 mlflow.set_tracking_uri("https://dagshub.com/nipun5/AquaPredict_MLFLOW_Dagshub.mlflow")
-data = pd.read_csv("D:/EXP_TRACKING_DVC/data/water_potability.csv")
+data = pd.read_csv("water_potability.csv")
 
 from sklearn.model_selection import train_test_split
 train_data,test_data = train_test_split(data,test_size=0.20,random_state=42)
